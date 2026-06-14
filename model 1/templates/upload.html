@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DermacareVision AI - Skin Analysis</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f0f4f8;
+            color: #1a2332;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: linear-gradient(135deg, #0f2a4a 0%, #1a3a5c 50%, #0d3b66 100%);
+            color: #fff;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #00b4d8, #0077b6);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .logo-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .logo-text span {
+            color: #48cae4;
+        }
+
+        .nav-badge {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #90e0ef;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0f2a4a;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero p {
+            color: #5a6a7a;
+            font-size: 1.05rem;
+            max-width: 500px;
+        }
+
+        .upload-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 4px 24px rgba(15,42,74,0.08);
+            border: 1px solid #e2e8f0;
+        }
+
+        .upload-zone {
+            border: 2px dashed #c8d6e5;
+            border-radius: 12px;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-zone:hover {
+            border-color: #0077b6;
+            background: #e8f4f8;
+        }
+
+        .upload-zone .icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+            color: #0077b6;
+        }
+
+        .upload-zone p {
+            color: #5a6a7a;
+            font-size: 0.95rem;
+        }
+
+        .upload-zone .browse-text {
+            color: #0077b6;
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-name {
+            font-size: 0.85rem;
+            color: #2d3748;
+            text-align: center;
+            margin-bottom: 1rem;
+            min-height: 1.2rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 0.9rem;
+            background: linear-gradient(135deg, #0077b6, #00b4d8);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.3px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0,119,182,0.3);
+        }
+
+        .submit-btn:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .conditions-label {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .conditions-label h3 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #8896a6;
+            margin-bottom: 0.75rem;
+        }
+
+        .condition-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .condition-tags span {
+            background: #e8f4f8;
+            color: #0077b6;
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 500;
+        }
+
+        .disclaimer {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding: 0.75rem 1rem;
+            background: #fff9e6;
+            border: 1px solid #ffe08a;
+            border-radius: 8px;
+            max-width: 480px;
+            width: 100%;
+        }
+
+        .disclaimer p {
+            font-size: 0.78rem;
+            color: #7a6a2a;
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.2rem;
+            background: #0f2a4a;
+            color: #8896a6;
+            font-size: 0.8rem;
+        }
+
+        footer a {
+            color: #48cae4;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-section">
+            <div class="logo-icon">DV</div>
+            <div class="logo-text">Dermacare<span>Vision</span> AI</div>
+        </div>
+        <div class="nav-badge">Model 1 &middot; 5 Conditions</div>
+    </header>
+
+    <div class="main-content">
+        <div class="hero">
+            <h1>Skin Lesion Analysis</h1>
+            <p>Upload a dermatological image for AI-powered skin disease classification</p>
+        </div>
+
+        <form class="upload-card" action="/" method="post" enctype="multipart/form-data" id="uploadForm">
+            <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                <div class="icon">&#x2191;</div>
+                <p>Drag and drop your image here</p>
+                <p>or <span class="browse-text">browse files</span></p>
+            </div>
+            <input type="file" name="file" id="fileInput" accept="image/*" required />
+            <div class="file-name" id="fileName"></div>
+            <button type="submit" class="submit-btn" id="submitBtn" disabled>Analyze Image</button>
+        </form>
+
+        <div class="conditions-label">
+            <h3>Supported Conditions</h3>
+            <div class="condition-tags">
+                <span>Acne</span>
+                <span>Hair Loss</span>
+                <span>Nail Fungus</span>
+                <span>Normal Skin</span>
+                <span>Skin Allergy</span>
+            </div>
+        </div>
+
+        <div class="disclaimer">
+            <p>This tool is for educational and research purposes only. It is not a substitute for professional medical diagnosis.</p>
+        </div>
+    </div>
+
+    <footer>
+        Developed by Ibrahim Shaikh, Sahil Sahare, and Tohid Pathan
+    </footer>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileName = document.getElementById('fileName');
+        const submitBtn = document.getElementById('submitBtn');
+
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                fileName.textContent = 'Selected: ' + this.files[0].name;
+                submitBtn.disabled = false;
+            }
+        });
+
+        dropZone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#0077b6';
+            this.style.background = '#e8f4f8';
+        });
+
+        dropZone.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#c8d6e5';
+            this.style.background = '#f8fafc';
+        });
+
+        dropZone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#c8d6e5';
+            this.style.background = '#f8fafc';
+            if (e.dataTransfer.files.length > 0) {
+                fileInput.files = e.dataTransfer.files;
+                fileName.textContent = 'Selected: ' + e.dataTransfer.files[0].name;
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

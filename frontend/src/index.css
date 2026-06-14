@@ -1,0 +1,81 @@
+/* DermacareVision AI - Global styles & design tokens */
+/* Developed by Ibrahim Shaikh, Sahil Sahare, Tohid Pathan */
+
+@import "tailwindcss";
+
+/*
+ * Tailwind v4 theme. Every custom utility used across the app
+ * (bg-navy, text-cyan-pale, bg-medical-600, etc.) is generated
+ * from the tokens declared here.
+ */
+@theme {
+  /* Deep clinical navy */
+  --color-navy: #0f2a4a;
+  --color-navy-light: #1a3a5c;
+  --color-navy-dark: #0a1f35;
+  --color-navy-700: #14365a;
+  --color-navy-800: #0d2742;
+  --color-navy-900: #081b2e;
+
+  /* Primary blue */
+  --color-blue: #0077b6;
+  --color-blue-light: #0096c7;
+
+  /* Cyan accent */
+  --color-cyan: #00b4d8;
+  --color-cyan-light: #48cae4;
+  --color-cyan-pale: #90e0ef;
+
+  /* Medical accent scale (used by navigation / brand chips) */
+  --color-medical-300: #7dd3e8;
+  --color-medical-400: #48cae4;
+  --color-medical-500: #0096c7;
+  --color-medical-600: #0077b6;
+  --color-medical-700: #035e90;
+
+  /* Neutrals / surfaces */
+  --color-surface: #f0f4f8;
+  --color-card: #ffffff;
+  --color-border: #e2e8f0;
+
+  /* Text */
+  --color-text: #1a2332;
+  --color-text-secondary: #5a6a7a;
+
+  /* Disclaimer banner */
+  --color-disclaimer-bg: #fff9e6;
+  --color-disclaimer-border: #ffe08a;
+
+  /* Status */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Subtle scrollbar for the clinical look */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #c7d2dd;
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #aab8c6;
+}

@@ -1,0 +1,49 @@
+# DermacareVision AI Gateway - default (dev) configuration
+# Developed by Ibrahim Shaikh, Sahil Sahare, Tohid Pathan
+#
+# Uses an in-memory H2 database so the gateway runs with zero external
+# dependencies. Activate the 'prod' profile for MySQL persistence.
+
+server:
+  port: 8080
+
+spring:
+  application:
+    name: dermacarevision-gateway
+
+  datasource:
+    url: jdbc:h2:mem:dermacare;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  servlet:
+    multipart:
+      max-file-size: 16MB
+      max-request-size: 20MB
+
+dermacare:
+  inference-url: ${INFERENCE_URL:http://localhost:5001}
+  uploads-dir: ${UPLOADS_DIR:uploads}
+  cors-origins: ${CORS_ORIGINS:http://localhost:5173}
+  seed-demo: true
+  jwt:
+    secret: ${JWT_SECRET:dev-secret-change-me-0123456789abcdef0123456789abcdef0123456789}
+    expiration-ms: 86400000
+
+logging:
+  level:
+    org.springframework.security: INFO
