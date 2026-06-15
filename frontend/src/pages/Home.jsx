@@ -18,8 +18,8 @@ const features = [
   },
   {
     icon: ScanSearch,
-    title: 'Explainable AI (Grad-CAM)',
-    text: 'Visual heatmaps reveal exactly which regions of the image drove the model’s prediction.',
+    title: 'Disease Insights',
+    text: 'Each prediction comes with an overview, symptoms, risk indicators, and precautions for the detected condition.',
   },
   {
     icon: BarChart3,

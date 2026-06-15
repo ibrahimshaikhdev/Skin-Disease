@@ -4,7 +4,6 @@ import { ArrowLeft, Loader2, AlertCircle } from 'lucide-react';
 import PredictionCard from '../components/PredictionCard';
 import ProbabilityChart from '../components/ProbabilityChart';
 import InsightPanel from '../components/InsightPanel';
-import HeatmapViewer from '../components/HeatmapViewer';
 import Disclaimer from '../components/Disclaimer';
 import { getPrediction } from '../services/predictionService';
 
@@ -66,8 +65,7 @@ export default function HistoryDetail() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-        <HeatmapViewer predictionId={data.id} imageUrl={data.imageUrl} />
+      <div className="mt-8">
         <InsightPanel insight={data.insight} />
       </div>
 

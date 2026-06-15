@@ -3,7 +3,6 @@ import { ArrowLeft, RotateCcw } from 'lucide-react';
 import PredictionCard from '../components/PredictionCard';
 import ProbabilityChart from '../components/ProbabilityChart';
 import InsightPanel from '../components/InsightPanel';
-import HeatmapViewer from '../components/HeatmapViewer';
 import Disclaimer from '../components/Disclaimer';
 
 export default function Results() {
@@ -16,7 +15,6 @@ export default function Results() {
 
   const { result, imagePreview } = state;
   const prediction = result.prediction || {};
-  const imageUrl = result.imageUrl || imagePreview;
 
   return (
     <div className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10">
@@ -51,9 +49,8 @@ export default function Results() {
         </div>
       </div>
 
-      {/* Explainable AI + Disease insights */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-        {result.id && <HeatmapViewer predictionId={result.id} imageUrl={imageUrl} />}
+      {/* Disease insights */}
+      <div className="mt-8">
         <InsightPanel insight={result.insight} />
       </div>
 
