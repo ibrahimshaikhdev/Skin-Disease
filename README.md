@@ -97,6 +97,8 @@ java -jar target/gateway-1.0.0.jar --spring.profiles.active=prod
 
 The schema is created automatically (`ddl-auto: update`).
 
+For a free live deployment path with Vercel, Render, Hugging Face Spaces, and TiDB, see [DEPLOYMENT.md](DEPLOYMENT.md).
+
 ## API Overview (gateway, `/api`)
 
 | Method | Path | Auth | Description |

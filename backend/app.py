@@ -4,6 +4,7 @@
 # Stateless ML service fronted by the Spring Boot gateway. Serves a single
 # unified skin-disease model: prediction, Grad-CAM, and disease insights.
 
+import os
 from datetime import datetime, timezone
 
 from flask import Flask, jsonify, request
@@ -123,11 +124,13 @@ def insights_route():
 
 
 if __name__ == "__main__":
+    port = int(os.environ.get("PORT", "5001"))
+    host = os.environ.get("HOST", "0.0.0.0")
     print(f"DermacareVision AI inference service starting (mode={engine.mode})")
     if engine.mode == "torch":
         print("Warming up model (first run downloads weights)...")
         engine.warmup()
     else:
         print(f"Running in MOCK mode (torch unavailable: {_torch_import_error})")
-    print("Listening on http://0.0.0.0:5001")
-    app.run(host="0.0.0.0", port=5001, debug=False)
+    print(f"Listening on http://{host}:{port}")
+    app.run(host=host, port=port, debug=False)

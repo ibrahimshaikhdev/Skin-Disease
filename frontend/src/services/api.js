@@ -1,8 +1,12 @@
 import axios from 'axios';
 
 // All requests go through the Spring Boot gateway (proxied in dev via Vite).
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+  ? `${import.meta.env.VITE_API_BASE_URL.replace(/\/$/, '')}/api`
+  : '/api';
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: apiBaseUrl,
   timeout: 60000,
 });
 
