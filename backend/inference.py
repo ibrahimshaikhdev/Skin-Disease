@@ -15,14 +15,20 @@ import os
 
 import numpy as np
 from PIL import Image
+from huggingface_hub import InferenceClient
 
 from models_config import CLASS_LABELS, HF_MODEL_REPO, MODEL_META
 
 _FORCE_MOCK = os.environ.get("DERMA_MOCK", "").lower() in ("1", "true", "yes")
+_FORCE_REMOTE_API = os.environ.get("DERMA_REMOTE_API", "").lower() in ("1", "true", "yes")
 TORCH_AVAILABLE = False
 _torch_import_error = None
+HF_API_AVAILABLE = False
+_hf_api_error = None
+_hf_api_mode = False
+_hf_client = None
 
-if not _FORCE_MOCK:
+if not _FORCE_MOCK and not _FORCE_REMOTE_API:
     try:
         import torch
         import torch.nn.functional as F
@@ -32,6 +38,19 @@ if not _FORCE_MOCK:
     except Exception as exc:  # pragma: no cover - environment dependent
         _torch_import_error = str(exc)
         TORCH_AVAILABLE = False
+
+if _FORCE_REMOTE_API:
+    try:
+        _hf_client = InferenceClient(
+            model=HF_MODEL_REPO,
+            token=os.environ.get("HF_TOKEN") or None,
+        )
+        HF_API_AVAILABLE = True
+        _hf_api_mode = True
+    except Exception as exc:  # pragma: no cover - environment dependent
+        _hf_api_error = str(exc)
+        HF_API_AVAILABLE = False
+        _hf_api_mode = False
 
 
 # --------------------------------------------------------------------------- #
@@ -92,13 +111,15 @@ def _format_probabilities(probabilities, labels):
 # --------------------------------------------------------------------------- #
 class InferenceEngine:
     def __init__(self):
-        self.mock = not TORCH_AVAILABLE
+        self.mock = not TORCH_AVAILABLE and not _hf_api_mode
         self._model = None
         self._processor = None
         self._labels = list(CLASS_LABELS)
 
     @property
     def mode(self):
+        if _hf_api_mode:
+            return "hf-api"
         return "mock" if self.mock else "torch"
 
     @property
@@ -110,6 +131,8 @@ class InferenceEngine:
         return MODEL_META["name"]
 
     def warmup(self):
+        if _hf_api_mode:
+            return
         if not self.mock:
             self._ensure_loaded()
 
@@ -137,7 +160,31 @@ class InferenceEngine:
     # -- prediction --------------------------------------------------------- #
     def predict(self, image_bytes, model_id=1):
         pil_image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
-        if self.mock:
+        if _hf_api_mode:
+            predictions = _hf_client.image_classification(pil_image)
+            if not predictions:
+                raise RuntimeError("Hugging Face API returned no predictions")
+            if not isinstance(predictions, list):
+                predictions = [predictions]
+            probs = [0.0] * len(self._labels)
+            label_to_index = {label.lower(): i for i, label in enumerate(self._labels)}
+            for item in predictions:
+                label = self._pretty(getattr(item, "label", ""))
+                score = float(getattr(item, "score", 0.0))
+                index = label_to_index.get(label.lower())
+                if index is not None:
+                    probs[index] = score
+            if max(probs) <= 0:
+                top = predictions[0]
+                label = self._pretty(getattr(top, "label", "Unknown"))
+                confidence = round(float(getattr(top, "score", 0.0)), 4)
+                return {
+                    "label": label,
+                    "confidence": confidence,
+                    "class_index": 0,
+                    "probabilities": [{"class": label, "probability": confidence}],
+                }
+        elif self.mock:
             probs = self._mock_probabilities(image_bytes, len(self._labels))
         else:
             self._ensure_loaded()
@@ -157,6 +204,17 @@ class InferenceEngine:
     # -- Grad-CAM ----------------------------------------------------------- #
     def gradcam(self, image_bytes, model_id=1, target_index=None):
         pil_image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+        if _hf_api_mode:
+            probs = self._mock_probabilities(image_bytes, len(self._labels))
+            idx = target_index if target_index is not None else int(np.argmax(probs))
+            cam = self._mock_cam(image_bytes)
+            return {
+                "label": self._labels[idx],
+                "class_index": idx,
+                "confidence": round(float(probs[idx]), 4),
+                "heatmap": _overlay_heatmap(pil_image, cam),
+                "note": "Grad-CAM is approximated in API mode.",
+            }
         if self.mock:
             probs = self._mock_probabilities(image_bytes, len(self._labels))
             idx = target_index if target_index is not None else int(np.argmax(probs))

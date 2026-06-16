@@ -1,0 +1,37 @@
+# ---- Python (ML service) ----
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# ---- Node (frontend) ----
+node_modules/
+frontend/dist/
+frontend/build/
+
+# ---- Java / Spring Boot (gateway) ----
+gateway/target/
+*.class
+
+# ---- App data / secrets ----
+.env
+*.env
+!*.env.example
+gateway/uploads/
+uploads/
+
+# ---- Trained model weights (too large for GitHub) ----
+model 1/models/*.pth
+model 2/
+model 3/
+
+# ---- Tooling / local downloads ----
+tools/
+maven.zip
+
+# ---- OS / IDE ----
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log

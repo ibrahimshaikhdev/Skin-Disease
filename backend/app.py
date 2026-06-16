@@ -48,6 +48,18 @@ def _model_descriptor():
     }
 
 
+@app.route("/", methods=["GET"])
+def root():
+    # Landing/health route (Hugging Face Spaces pings the root path).
+    return jsonify({
+        "service": "DermacareVision AI - Inference Service",
+        "status": "healthy",
+        "mode": engine.mode,
+        "model": MODEL_META["name"],
+        "endpoints": ["/api/health", "/api/models", "/api/predict", "/api/insights"],
+    })
+
+
 @app.route("/api/health", methods=["GET"])
 def health():
     return jsonify({
