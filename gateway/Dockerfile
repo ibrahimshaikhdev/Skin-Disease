@@ -1,13 +1,17 @@
 # DermacareVision AI - API Gateway (Render / Docker)
 # Developed by Ibrahim Shaikh, Sahil Sahare, Tohid Pathan
+#
+# NOTE: This Dockerfile is built from the REPOSITORY ROOT as context
+# (Render "Root Directory" left empty, Dockerfile Path = gateway/Dockerfile).
+# All COPY paths are therefore prefixed with gateway/.
 
 # ---- Build stage: compile the jar with Maven + JDK 17 ----
 FROM maven:3.9-eclipse-temurin-17 AS build
 WORKDIR /build
-COPY pom.xml .
+COPY gateway/pom.xml .
 # Cache dependencies first for faster rebuilds
 RUN mvn -q dependency:go-offline
-COPY src ./src
+COPY gateway/src ./src
 RUN mvn -q -DskipTests clean package
 
 # ---- Run stage: slim JRE with just the jar ----
