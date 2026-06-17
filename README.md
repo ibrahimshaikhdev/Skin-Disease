@@ -2,6 +2,8 @@
 
 An intelligent skin lesion analysis platform powered by deep learning. DermacareVision AI performs multi-class skin disease classification using medical image analysis with PyTorch-based convolutional neural networks, wrapped in a secured three-tier architecture with persistence, analytics, and explainable-AI heatmaps.
 
+LIVE at https://skin-disease-ist.vercel.app/
+
 > **Disclaimer:** This system is an educational clinical support prototype and is not intended for professional medical diagnosis.
 
 ## Architecture
